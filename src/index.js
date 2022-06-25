@@ -1,6 +1,8 @@
 import debounce from "lodash.debounce";
 import Notiflix from 'notiflix';
 import { fetchCountries } from "./js/fetchCountries";
+import { countriesBuildList } from "./js/countriesBuildList";
+import { countriesBuildContainer } from "./js/countriesBuildContainer";
 import './css/styles.css';
 
 
@@ -15,34 +17,27 @@ const refs = {
 
 refs.input.addEventListener('input', debounce(event => {
     event.preventDefault();
-    
+
     const countries = refs.input.value;
 
-    fetchCountries(countries).then(data => {
+    fetchCountries(countries.trim()).then(data => {
         if (data.length > 2 && data.length < 10) {
-            refs.countryList.innerHTML = 
-            data.map(country => `<li>
-                <p>
-                    <img src="${country.flags.svg}" alt="${country.name.official}" width="17" height="13"/>
-                    ${country.name.common}
-                </p>
-            </li>`).join('');
+            refs.countryInfo.innerHTML = '';
+            refs.countryList.innerHTML =
+                countriesBuildList(data);
         } else if (data.length < 2) {
-            refs.countryList.innerHTML = ' ';
+            refs.countryList.innerHTML = '';
             refs.countryInfo.innerHTML =
-                data.map(country => 
-                `<div>
-                    <h3>
-                        <img src="${country.flags.svg}" alt="${country.name.official}" width="17" height="13"/>
-                        ${country.name.official}
-                    </h3>
-                    <p><b>Capital: </b>${country.capital}</p>
-                    <p><b>Population: </b>${country.population}</p>
-                    <p><b>Languages: </b>${country.languages}</p>
-                </div>`
-                ).join('');
+                countriesBuildContainer(data);
         } else if (data.length > 10) {
-            Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
+            Notiflix.Notify.info(
+                'Too many matches found. Please enter a more specific name.'
+            );
         }
     })
+        .catch(() => {
+            Notiflix.Notify.failure(
+                'Oops, there is no country with that name'
+            );
+        })
 }, DEBOUNCE_DELAY));

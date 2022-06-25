@@ -1,10 +1,11 @@
+
 export const fetchCountries = (name) => {
-    return fetch(`https://restcountries.com/v3.1/name/${name}`)
+    return fetch(`https://restcountries.com/v3.1/name/${name}?fileds=name,capital,population,languages,flags`)
         .then(response => {
-            if (response.ok) {
-                return response.json()
+            if (!response.ok) {
+                throw Error(response.statusText);
             }
-            Notiflix.Notify.failure('Oops, there is no country with that name');
+            return response.json();
         });
 }
 // https://restcountries.com/v3.1/name/${name}
