@@ -6,7 +6,6 @@ import { countriesBuildContainer } from "./js/countriesBuildContainer";
 import './css/styles.css';
 
 
-
 const DEBOUNCE_DELAY = 300;
 
 const refs = {
@@ -19,8 +18,15 @@ refs.input.addEventListener('input', debounce(event => {
     event.preventDefault();
 
     const countries = refs.input.value;
+    const countriesToTrim = countries.trim();
 
-    fetchCountries(countries.trim()).then(data => {
+    if (countriesToTrim === '') {
+        refs.countryInfo.innerHTML = '';
+        refs.countryList.innerHTML = '';
+        return;
+    }
+
+    fetchCountries(countriesToTrim).then(data => {
         if (data.length > 2 && data.length < 10) {
             refs.countryInfo.innerHTML = '';
             refs.countryList.innerHTML =
