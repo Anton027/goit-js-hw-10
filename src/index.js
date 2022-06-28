@@ -27,11 +27,11 @@ refs.input.addEventListener('input', debounce(event => {
     }
 
     fetchCountries(countriesToTrim).then(data => {
-        if (data.length > 2 && data.length < 10) {
+        if (data.length >= 2 && data.length <= 10) {
             refs.countryInfo.innerHTML = '';
             refs.countryList.innerHTML =
                 countriesBuildList(data);
-        } else if (data.length < 2) {
+        } else if (data.length === 1) {
             refs.countryList.innerHTML = '';
             refs.countryInfo.innerHTML =
                 countriesBuildContainer(data);
